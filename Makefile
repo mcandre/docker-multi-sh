@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -48,7 +48,13 @@ image-posh: posh.Dockerfile
 test-posh: image-posh examples/hello.dash
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-posh posh -n /src/examples/hello.posh
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh
+image-ksh93: ksh93.Dockerfile
+	docker build -f ksh93.Dockerfile -t mcandre/docker-lint-ksh93 .
+
+test-ksh93: image-ksh93 examples/hello.ksh93
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-ksh93 ksh93 -n /src/examples/hello.ksh93
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -70,3 +76,6 @@ publish-dash: image-dash
 
 publish-posh: image-posh
 	docker push mcandre/docker-lint-posh
+
+publish-ksh93: image-ksh93
+	docker push mcandre/docker-lint-ksh93
