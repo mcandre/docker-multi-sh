@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3 test-fish
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3 image-fish
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -90,7 +90,13 @@ image-bash3: bash3.Dockerfile
 test-bash3: image-bash3 examples/hello.bash3
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-bash3 bash -n /src/examples/hello.bash3
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3
+image-fish: fish.Dockerfile
+	docker build -f fish.Dockerfile -t mcandre/docker-lint-fish .
+
+test-fish: image-fish examples/hello.fish
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-fish fish -n /src/examples/hello.fish
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -133,3 +139,6 @@ publish-lksh: image-lksh
 
 publish-bash3: image-bash3
 	docker push mcandre/docker-lint-bash3
+
+publish-fish: image-fish
+	docker push mcandre/docker-lint-fish
