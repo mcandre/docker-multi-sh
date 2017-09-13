@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -72,7 +72,13 @@ image-tcsh: tcsh.Dockerfile
 test-tcsh: image-tcsh examples/hello.tcsh
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-tcsh tcsh -n /src/examples/hello.tcsh
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh
+image-ksh: ksh.Dockerfile
+	docker build -f ksh.Dockerfile -t mcandre/docker-lint-ksh .
+
+test-ksh: image-ksh examples/hello.ksh
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-ksh ksh -n /src/examples/hello.ksh
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -106,3 +112,6 @@ publish-csh: image-csh
 
 publish-tcsh: image-tcsh
 	docker push mcandre/docker-lint-tcsh
+
+publish-ksh: image-ksh
+	docker push mcandre/docker-lint-ksh
