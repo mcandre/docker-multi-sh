@@ -1,2 +1,2 @@
-FROM alpine
+FROM library/alpine
 RUN apk add -U zsh
