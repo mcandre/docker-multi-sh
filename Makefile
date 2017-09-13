@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -36,7 +36,13 @@ image-pdksh: pdksh.Dockerfile
 test-pdksh: image-pdksh
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-pdksh pdksh -n /src/examples/hello.pdksh
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh
+image-dash: dash.Dockerfile
+	docker build -f dash.Dockerfile -t mcandre/docker-lint-dash .
+
+test-dash: image-dash
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-dash dash -n /src/examples/hello.dash
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -52,3 +58,6 @@ publish-mksh: image-mksh
 
 publish-pdksh: image-pdksh
 	docker push mcandre/docker-lint-pdksh
+
+publish-dash: image-dash
+	docker push mcandre/docker-lint-dash
