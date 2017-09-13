@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -84,7 +84,13 @@ image-lksh: lksh.Dockerfile
 test-lksh: image-lksh examples/hello.lksh
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-lksh lksh -n /src/examples/hello.lksh
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh
+image-bash3: bash3.Dockerfile
+	docker build -f bash3.Dockerfile -t mcandre/docker-lint-bash3 .
+
+test-bash3: image-bash3 examples/hello.bash3
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-bash3 bash -n /src/examples/hello.bash3
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -124,3 +130,6 @@ publish-ksh: image-ksh
 
 publish-lksh: image-lksh
 	docker push mcandre/docker-lint-lksh
+
+publish-bash3: image-bash3
+	docker push mcandre/docker-lint-bash3
