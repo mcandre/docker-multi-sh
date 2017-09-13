@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3 test-fish test-ash test-rc test-yash
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3 test-fish test-ash test-rc test-yash test-perl
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3 image-fish image-ash image-rc image-yash
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3 image-fish image-ash image-rc image-yash image-perl
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -114,7 +114,13 @@ image-yash: yash.Dockerfile
 test-yash: image-yash examples/hello.yash
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-yash yash -n /src/examples/hello.yash
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish publish-ash publish-rc publish-yash
+image-perl: perl.Dockerfile
+	docker build -f perl.Dockerfile -t mcandre/docker-lint-perl .
+
+test-perl: image-perl examples/hello.pl
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-perl perl -c /src/examples/hello.pl
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish publish-ash publish-rc publish-yash publish-perl
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -169,3 +175,6 @@ publish-rc: image-rc
 
 publish-yash: image-yash
 	docker push mcandre/docker-lint-yash
+
+publish-perl: image-perl
+	docker push mcandre/docker-lint-perl
