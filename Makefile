@@ -136,7 +136,7 @@ image-python3: python3.Dockerfile
 	docker build -f python3.Dockerfile -t mcandre/docker-lint-python3 .
 
 test-python3: image-python3 examples/hello.py3
-	! docker run -v "$(PWD):/src" mcandre/docker-lint-python3 python3 -c /src/examples/hello.py3
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-python3 python3 -m py_compile /src/examples/hello.py3
 
 publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish publish-ash publish-rc publish-yash publish-perl publish-python publish-ruby publish-python3
 
