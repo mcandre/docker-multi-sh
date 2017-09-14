@@ -2,9 +2,9 @@ PWD=$(shell pwd)
 
 all: test-images
 
-test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3 test-fish test-ash test-rc test-yash test-perl test-python test-ruby test-python3 test-ruby1.9
+test-images: test-sh test-bash test-zsh test-mksh test-pdksh test-dash test-posh test-ksh93 test-ksh88 test-csh test-tcsh test-ksh test-lksh test-bash3 test-fish test-ash test-rc test-yash test-perl test-python test-ruby test-python3 test-ruby1.9 test-ruby1.8
 
-images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3 image-fish image-ash image-rc image-yash image-perl image-python image-ruby test-python3 test-ruby1.9
+images: image-sh image-bash image-zsh image-mksh image-pdksh image-dash image-posh image-ksh93 image-ksh88 image-csh image-tcsh image-ksh image-lksh image-bash3 image-fish image-ash image-rc image-yash image-perl image-python image-ruby image-python3 image-ruby1.9 image-ruby1.8
 
 image-sh: sh.Dockerfile
 	docker build -f sh.Dockerfile -t mcandre/docker-lint-sh .
@@ -144,7 +144,13 @@ image-ruby1.9: ruby1.9.Dockerfile
 test-ruby1.9: image-ruby1.9 examples/hello-1.9.rb
 	! docker run -v "$(PWD):/src" mcandre/docker-lint-ruby1.9 ruby -c /src/examples/hello-1.9.rb
 
-publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish publish-ash publish-rc publish-yash publish-perl publish-python publish-ruby publish-python3 publish-ruby1.9
+image-ruby1.8: ruby1.8.Dockerfile
+	docker build -f ruby1.8.Dockerfile -t mcandre/docker-lint-ruby1.8 .
+
+test-ruby1.8: image-ruby1.8 examples/hello-1.8.rb
+	! docker run -v "$(PWD):/src" mcandre/docker-lint-ruby1.8 ruby -c /src/examples/hello-1.8.rb
+
+publish: publish-sh publish-bash publish-zsh publish-mksh publish-pdksh publish-dash publish-posh publish-ksh93 publish-ksh88 publish-csh publish-tcsh publish-ksh publish-lksh publish-bash3 publish-fish publish-ash publish-rc publish-yash publish-perl publish-python publish-ruby publish-python3 publish-ruby1.9 publish-ruby1.8
 
 publish-sh: image-sh
 	docker push mcandre/docker-lint-sh
@@ -214,3 +220,6 @@ publish-python3: image-python3
 
 publish-ruby1.9: image-ruby1.9
 	docker push mcandre/docker-lint-ruby1.9
+
+publish-ruby1.8: image-ruby1.8
+	docker push mcandre/docker-lint-ruby1.8
