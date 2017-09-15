@@ -1,1 +1,1 @@
-FROM library/debian:jessie
+FROM library/debian:stretch
